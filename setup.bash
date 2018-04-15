@@ -66,6 +66,32 @@ sudo mkdir /var/p0f/
 echo '[apt-get] Installing python-software-properties'
 sudo apt-get install -y python-software-properties &> /dev/null
 
+## install glastoph ##
+sudo apt-get install python2.7 python-openssl python-gevent libevent-dev python2.7-dev build-essential make
+sudo apt-get install python-chardet python-requests python-sqlalchemy python-lxml
+sudo apt-get install python-beautifulsoup mongodb python-pip python-dev python-setuptools
+sudo apt-get install g++ git php5 php5-dev liblapack-dev gfortran libmysqlclient-dev
+sudo apt-get install libxml2-dev libxslt-dev
+sudo pip install --upgrade distribute
+
+## install php sandbox ##
+cd /opt
+sudo git clone git://github.com/mushorg/BFR.git
+cd BFR
+sudo phpize
+sudo ./configure --enable-bfr
+sudo make && sudo make install
+
+cd /opt
+sudo git clone https://github.com/mushorg/glastopf.git
+cd glastopf
+sudo python setup.py install
+
+cd /opt
+sudo mkdir myhoneypot
+cd myhoneypot
+sudo glastopf-runner
+
 ## install dionaea ##
 
 #add dionaea repo
@@ -138,18 +164,21 @@ sudo sed -i "s|%%IFACE%%|$iface|g" /etc/init.d/p0f
 
 sudo wget https://raw.github.com/andrewmichaelsmith/honeypot-setup-script/master/init/dionaea -O /etc/init.d/dionaea
 sudo wget https://raw.github.com/andrewmichaelsmith/honeypot-setup-script/master/init/kippo -O /etc/init.d/kippo
+sudo wget https://raw.githubusercontent.com/matthewlevy97/honeypot-setup-script/master/init/glastoph -O /etc/init.d/glastoph
 
 #install system services
 sudo chmod +x /etc/init.d/p0f
 sudo chmod +x /etc/init.d/dionaea
 sudo chmod +x /etc/init.d/kippo
+sudo chmod +x /etc/init.d/glastoph
 
 sudo update-rc.d p0f defaults
 sudo update-rc.d dionaea defaults
 sudo update-rc.d kippo defaults
+sudo update-rc.d glastoph defaults
 
 #start the honeypot software
 sudo /etc/init.d/kippo start
 sudo /etc/init.d/p0f start
 sudo /etc/init.d/dionaea start
-
+sudo /etc/init.d/glastoph start
